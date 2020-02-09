@@ -5,7 +5,7 @@ require_relative "./keychain.rb"
 
 class KeyChainManager < Thor
 
-  desc "add_keychain DOMAIN USERNAME", "Add a new keychain"
+  desc "add_keychain DOMAIN USERNAME", "Add a new keychain..."
 
   def add_keychain(domain, username)
     password = generate_password
@@ -16,38 +16,25 @@ class KeyChainManager < Thor
     end
   end
 
-  desc "destroy_keychain", "Delete a keychain"
-
-  def destroy_keychain
-    load_and_list
-
-    p "Type the slug of item to delete keychain..."
-    input = STDIN.gets.chomp
-
-    new_ps.transaction do |store|
-      store.roots.each do |x|
-       store[x].delete_if{|keychain| keychain.slug == input.to_s}
-       p "Keychain has been deleted"
-      end
-    end
-  end
-
-  desc "update_keychain DOMAIN", "Update a keychain password"
+  desc "update_keychain DOMAIN", "Update a keychain password..."
 
   def update_keychain
     load_and_list
     p "Type the slug of item to update a keychain password..."
     input = STDIN.gets.chomp
-    new_ps.transaction do |store|
-      store.roots.each do |x|
-        obj = store[x].select{|keychain| keychain.slug == input.to_s}
-        obj.first.password = generate_password
-        p "The password has been updated to #{obj.first.password}"
-      end
-    end
+    select_and_update(input)
   end
 
-  desc "list_keychain DOMAIN", "List all keychains"
+  desc "destroy_keychain", "Delete a keychain..."
+
+  def destroy_keychain
+    load_and_list
+    p "Type the slug of item to delete keychain..."
+    input = STDIN.gets.chomp
+    select_and_destroy(input)
+  end
+
+  desc "list_keychain DOMAIN", "List all keychains..."
 
   def list_keychain
     indexed_objects
@@ -64,8 +51,27 @@ class KeyChainManager < Thor
     new_ps.transaction do |store|
       store.roots.each do |x|
         store[x].each_with_index do |item, i|
-         puts "#{i+1} - #{item.url} --- #{item.username} --- #{item.password} --- slug: #{item.slug}"
+         p "#{i+1} - #{item.url} --- #{item.username} --- #{item.password} --- slug: #{item.slug}"
         end
+      end
+    end
+  end
+
+  def select_and_update(input)
+    new_ps.transaction do |store|
+      store.roots.each do |x|
+        obj = store[x].select{|keychain| keychain.slug == input.to_s}
+        obj.first.password = generate_password
+        p "The password for this keychain has been updated to #{obj.first.password}"
+      end
+    end
+  end
+
+  def select_and_destroy(input)
+    new_ps.transaction do |store|
+      store.roots.each do |x|
+       store[x].delete_if{|keychain| keychain.slug == input.to_s}
+       p "Keychain has been deleted"
       end
     end
   end
@@ -83,6 +89,5 @@ class KeyChainManager < Thor
   end
 
 end
-
 
 KeyChainManager.start(ARGV)
