@@ -16,7 +16,7 @@ class KeyChainManager < Thor
     end
   end
 
-  desc "destroy_keychain", "Delete a keychain by typing the slug"
+  desc "destroy_keychain", "Delete a keychain"
 
   def destroy_keychain
     load_and_list
@@ -32,7 +32,7 @@ class KeyChainManager < Thor
     end
   end
 
-  desc "update_keychain DOMAIN", "select a keychain"
+  desc "update_keychain DOMAIN", "Update a keychain password"
 
   def update_keychain
     load_and_list
