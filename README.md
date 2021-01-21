@@ -3,19 +3,7 @@ Command line app for managing your logins. Generates random password and stores 
 
 Using [thor](https://github.com/erikhuda/thor) and [yaml::store](https://ruby-doc.org/stdlib-2.7.2/libdoc/yaml/rdoc/YAML/Store.html) library(similar to PStore).
 
-`ruby app.rb`
+run app `ruby app.rb`
 
-`
-Commands:
-app.rb add DOMAIN USERNAME  # Add a new keychain...
-app.rb destroy              # Delete a keychain...
-app.rb help [COMMAND]       # Describe available commands or one specific command
-app.rb list DOMAIN          # List all keychains...
-app.rb update DOMAIN        # Update a keychain password...
-`
+![screenshot of password manager](https://raw.githubusercontent.com/jschee/password_manager/master/screenshot.png)
 
-`ruby app.rb add "somewebsite.com" "me@mail.com"`
-
-`ruby app.rb list`
-
-`"1 - somewebsite.com --- me@mail.com --- 506f1d24fe --- slug: 7604"`
