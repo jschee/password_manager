@@ -5,38 +5,39 @@ require_relative "./keychain.rb"
 
 class KeyChainManager < Thor
 
-  desc "add_keychain DOMAIN USERNAME", "Add a new keychain..."
+  desc "add DOMAIN USERNAME", "Add a new keychain..."
 
-  def add_keychain(domain, username)
+  def add(domain, username)
     password = generate_password
     slug = generate_slug
     new_ps.transaction do |x|
       x[:keychains] ||= Array.new
       x[:keychains].push(Keychain.new(url:"#{domain}", username:"#{username}", password:"#{password}", slug: "#{slug}"))
     end
+    puts "Generated your password: #{password}"
   end
 
-  desc "update_keychain DOMAIN", "Update a keychain password..."
+  desc "update DOMAIN", "Update a keychain password..."
 
-  def update_keychain
+  def update
     load_and_list
     p "Type the slug of item to update a keychain password..."
     input = STDIN.gets.chomp
     select_and_update(input)
   end
 
-  desc "destroy_keychain", "Delete a keychain..."
+  desc "destroy", "Delete a keychain..."
 
-  def destroy_keychain
+  def destroy
     load_and_list
     p "Type the slug of item to delete keychain..."
     input = STDIN.gets.chomp
     select_and_destroy(input)
   end
 
-  desc "list_keychain DOMAIN", "List all keychains..."
+  desc "list DOMAIN", "List all keychains..."
 
-  def list_keychain
+  def list
     indexed_objects
   end
 
